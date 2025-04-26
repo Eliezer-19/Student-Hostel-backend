@@ -13,8 +13,13 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // --- Middleware ---
-const FRONTEND_URL = process.env.FRONTEND_URL || 'https://student-hostel-frontend.onrender.com';
-app.use(cors({ origin: FRONTEND_URL }));
+// Define allowed frontend URLs including GitHub Pages
+const FRONTEND_URLS = [
+  process.env.FRONTEND_URL || 'https://student-hostel-frontend.onrender.com',
+  'https://eliezer-19.github.io/Student-Hostel-frontend'
+];
+// Apply CORS allowing requests from defined origins
+app.use(cors({ origin: FRONTEND_URLS }));
 app.use(bodyParser.json());
 
 // --- Routes ---
