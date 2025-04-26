@@ -13,7 +13,8 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // --- Middleware ---
-app.use(cors());
+const FRONTEND_URL = process.env.FRONTEND_URL || 'https://student-hostel-frontend.onrender.com';
+app.use(cors({ origin: FRONTEND_URL }));
 app.use(bodyParser.json());
 
 // --- Routes ---
