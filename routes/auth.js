@@ -1,4 +1,3 @@
-// backend/routes/auth.js
 const express = require('express');
 const bcrypt  = require('bcrypt');
 const jwt     = require('jsonwebtoken');
@@ -10,7 +9,6 @@ const router = express.Router();
 // --- Register ---
 router.post('/register', async (req, res) => {
   let { name, studentId, email, password, role } = req.body;
-  // default & validate role
   role = (role || 'student').toString().toLowerCase();
   if (!['student','admin'].includes(role)) {
     return res.status(400).json({ message: 'Invalid role' });
@@ -19,14 +17,12 @@ router.post('/register', async (req, res) => {
   if (!name||!studentId||!email||!password)
     return res.status(400).json({ message: 'All fields required' });
 
-  // 1) check existing
   const { rows: existing } = await pool.query(
     'SELECT id FROM users WHERE email=$1', [email]
   );
   if (existing.length)
     return res.status(400).json({ message: 'Email already in use' });
 
-  // 2) hash & insert
   const hashed = await bcrypt.hash(password, 10);
   const { rows } = await pool.query(
     `INSERT INTO users(name, student_id, email, password, role)
@@ -35,7 +31,6 @@ router.post('/register', async (req, res) => {
   );
   const user = rows[0];
 
-  // 3) sign token
   const token = jwt.sign({
     userId:    user.id,
     name:      user.name,

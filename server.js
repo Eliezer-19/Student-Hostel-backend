@@ -1,4 +1,3 @@
-// backend/server.js
 require('dotenv').config();
 const express     = require('express');
 const bodyParser  = require('body-parser');
@@ -13,14 +12,11 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // --- Middleware ---
-// Define allowed frontend URLs including GitHub Pages
 const FRONTEND_URLS = [
   process.env.FRONTEND_URL || 'https://student-hostel-frontend.onrender.com',
   'https://eliezer-19.github.io'
 ];
-// Apply CORS allowing requests from defined origins
 app.use(cors({ origin: FRONTEND_URLS }));
-// Handle preflight OPTIONS requests across all routes
 app.options('*', cors({ origin: FRONTEND_URLS }));
 app.use(bodyParser.json());
 
@@ -31,7 +27,6 @@ app.use('/api/applications', applicationRoutes);
 
 // --- Initialize DB tables ---
 async function initDb() {
-  // 1) create ENUM types (if missing) via DO blocks
   await pool.query(`
     DO $$
     BEGIN
@@ -55,7 +50,6 @@ async function initDb() {
     $$;
   `);
 
-  // 2) users table
   await pool.query(`
     CREATE TABLE IF NOT EXISTS users (
       id SERIAL PRIMARY KEY,
@@ -67,7 +61,6 @@ async function initDb() {
     );
   `);
 
-  // 3) hostels table
   await pool.query(`
     CREATE TABLE IF NOT EXISTS hostels (
       id SERIAL PRIMARY KEY,
@@ -79,7 +72,6 @@ async function initDb() {
     );
   `);
 
-  // 4) applications table
   await pool.query(`
     CREATE TABLE IF NOT EXISTS applications (
       id SERIAL PRIMARY KEY,

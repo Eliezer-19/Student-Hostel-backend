@@ -1,4 +1,3 @@
-// backend/routes/applications.js
 const express = require('express');
 const pool    = require('../db');
 const { verifyToken, isAdmin } = require('../middleware/auth');
@@ -51,7 +50,6 @@ router.post('/', verifyToken, async (req, res) => {
   const userId   = req.user.userId;
   const hostelId = req.body.hostelId;
 
-  // 1) check capacity (only count 'accepted' apps)
   const capRes = await pool.query(`
     SELECT h.capacity,
       COUNT(a.*) FILTER (WHERE a.status='accepted') AS occupancy
@@ -69,7 +67,6 @@ router.post('/', verifyToken, async (req, res) => {
   if (occupancy >= capacity)
     return res.status(400).json({ message: 'Hostel is full' });
 
-  // 2) upsert
   const exist = await pool.query(
     'SELECT id FROM applications WHERE user_id=$1', [userId]
   );
@@ -99,7 +96,6 @@ router.post('/', verifyToken, async (req, res) => {
  * body: { status: 'Approved'|'Rejected' }
  */
 router.put('/:id', verifyToken, isAdmin, async (req, res) => {
-  // accept both uppercase/lowercase and map "approved" → "accepted"
   let { status } = req.body;
   if (!status) {
     return res.status(400).json({ message: 'Status is required' });
