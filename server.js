@@ -16,10 +16,12 @@ const PORT = process.env.PORT || 5000;
 // Define allowed frontend URLs including GitHub Pages
 const FRONTEND_URLS = [
   process.env.FRONTEND_URL || 'https://student-hostel-frontend.onrender.com',
-  'https://eliezer-19.github.io/Student-Hostel-frontend'
+  'https://eliezer-19.github.io'
 ];
 // Apply CORS allowing requests from defined origins
 app.use(cors({ origin: FRONTEND_URLS }));
+// Handle preflight OPTIONS requests across all routes
+app.options('*', cors({ origin: FRONTEND_URLS }));
 app.use(bodyParser.json());
 
 // --- Routes ---
